@@ -27,4 +27,11 @@ async function refreshTable() {
 function populateDropdown() {
   const select = document.getElementById("charId");
   select.innerHTML = "";
-  const list = SQLiteLoader.getCharList
+  const list = SQLiteLoader.getCharList();
+  list.forEach(([id, name]) => {
+    const option = document.createElement("option");
+    option.value = id;
+    option.textContent = `${id} - ${name}`;
+    select.appendChild(option);
+  });
+}

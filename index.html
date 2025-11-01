@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>カードリスト管理</title>
+  <link rel="manifest" href="manifest.json">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <link rel="apple-touch-icon" href="icon.png">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <h1>カードリスト</h1>
+
+  <div id="card-form" class="form-row">
+    <div><select id="charId"></select></div>
+    <div><input type="text" id="rarity" placeholder="レアリティ"></div>
+    <div><input type="text" id="cardName" placeholder="カード名"></div>
+    <div><input type="number" id="index1" placeholder="Index1"></div>
+    <div><input type="number" id="index2" placeholder="Index2"></div>
+    <div><button onclick="saveCard()">保存</button></div>
+  </div>
+
+  <table id="card-table">
+    <thead>
+      <tr>
+        <th>ID</th><th>名前</th><th>レアリティ</th><th>カード名</th><th>Index1</th><th>Index2</th><th>操作</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+  <p style="margin-top:2em;">
+  <a href="csvmanage.html">CSVインポート・エクスポート</a>
+  </p>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.7.0/sql-wasm.js"></script>
+  <script src="sqlite-loader.js"></script>
+  <script src="ui-handler.js"></script>
+  <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('sw.js');
+    }
+  </script>
+</body>
+</html>

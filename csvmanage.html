@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>CSV管理</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <h1>CSVインポート・エクスポート</h1>
+
+  <section>
+    <h2>CSVインポート</h2>
+    <input type="file" id="csvFile" accept=".csv">
+    <button onclick="importCSV()">インポート</button>
+  </section>
+
+  <section style="margin-top:2em;">
+    <h2>CSVエクスポート</h2>
+    <button onclick="exportCSV()">エクスポート</button>
+  </section>
+
+  <p style="margin-top:2em;">
+    <a href="index.html">← カード管理に戻る</a>
+  </p>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.7.0/sql-wasm.js"></script>
+  <script src="sqlite-loader.js"></script>
+  <script>
+    async function importCSV() {
+      await SQLiteLoader.init();
+      await SQLiteLoader.loadFromIndexedDB();
+
+      const file = document.getElementById("csvFile").files[0];
+      if (!file) return alert("CSVファイルを選択してください");
+
+      const text = await file.text();
+      const lines = text.trim().split("\n");
+      for (const line of lines) {
+        const [id, rarity, name, index1, index2] = line.split(",");
+        SQLiteLoader.updateCard(parseInt(id), rarity, name, parseInt(index1), parseInt(index2));
+      }
+
+      SQLiteLoader.exportToIndexedDB();
+      alert("インポート完了しました");
+    }
+
+    async function exportCSV() {
+      await SQLiteLoader.init();
+      await SQLiteLoader.loadFromIndexedDB();
+      const cards = SQLiteLoader.getAllCards();
+
+      const csv = cards.map(c =>
+        [c["キャラクターID"], c["レアリティ"], c["カード名"], c["カードIndex1"], c["カードIndex2"]].join(",")
+      ).join("\n");
+
+      const blob = new Blob([csv], { type: "text/csv" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "cardlist.csv";
+      a.click();
+      URL.revokeObjectURL(url);
+    }
+  </script>
+</body>
+</html>
